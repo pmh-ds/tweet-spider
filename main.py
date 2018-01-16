@@ -24,11 +24,19 @@ for _ in range(5):
     body.send_keys(Keys.PAGE_DOWN)
     time.sleep(0.2)
 
-tweets = browser.find_elements_by_class_name("tweet-text")
+tweet_elements = browser.find_elements_by_class_name("content")
 
-print("{} tweets found.\n".format(len(tweets)))
+print("{} tweets found.\n".format(len(tweet_elements)))
 count = 1
-for tweet in tweets:
+tweets = []
+for tweet_element in tweet_elements:
     print("**** Tweet {} ****".format(count))
-    print(tweet.text + "\n")
+    tweet = {}
+    tweet["username"] = (tweet_element
+                         .find_elements_by_class_name("stream-item-header")[0]
+                         .find_elements_by_class_name("username")[0].text)
+    tweet["text"] = tweet_element.find_elements_by_class_name("tweet-text")[0].text
+    tweet["timestamp"] =  int(tweet_element.find_elements_by_class_name("_timestamp")[0].get_attribute("data-time-ms"))
+    print(tweet)
+    print("\n")
     count += 1
