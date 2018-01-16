@@ -39,6 +39,8 @@ for tweet_element in tweet_elements:
     tweet["text"] = tweet_text.text
     tweet["hashtag_mentions"] = [hashtag.text for hashtag in 
                                  tweet_text.find_elements_by_class_name("twitter-hashtag")]
+    tweet["user_mentions"] = [user.text for user in
+                              tweet_text.find_elements_by_class_name("twitter-atreply")]
     tweet["timestamp"] =  int(tweet_element.find_elements_by_class_name("_timestamp")[0].get_attribute("data-time-ms"))
     print(tweet)
     print("\n")
