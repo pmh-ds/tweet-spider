@@ -1,5 +1,4 @@
 import time
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -20,7 +19,7 @@ time.sleep(1)
 print("Find tweets...")
 body = browser.find_element_by_tag_name("body")
 
-for _ in range(5):
+for _ in range(50):
     body.send_keys(Keys.PAGE_DOWN)
     time.sleep(0.2)
 
@@ -42,6 +41,7 @@ for tweet_element in tweet_elements:
     tweet["user_mentions"] = [user.text for user in
                               tweet_text.find_elements_by_class_name("twitter-atreply")]
     tweet["timestamp"] =  int(tweet_element.find_elements_by_class_name("_timestamp")[0].get_attribute("data-time-ms"))
+    tweet["link"] = tweet_element.find_elements_by_class_name("tweet-timestamp")[0].get_attribute("href")
     print(tweet)
     print("\n")
     count += 1
