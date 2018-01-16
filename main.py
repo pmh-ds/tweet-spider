@@ -35,7 +35,10 @@ for tweet_element in tweet_elements:
     tweet["username"] = (tweet_element
                          .find_elements_by_class_name("stream-item-header")[0]
                          .find_elements_by_class_name("username")[0].text)
-    tweet["text"] = tweet_element.find_elements_by_class_name("tweet-text")[0].text
+    tweet_text = tweet_element.find_elements_by_class_name("tweet-text")[0]
+    tweet["text"] = tweet_text.text
+    tweet["hashtag_mentions"] = [hashtag.text for hashtag in 
+                                 tweet_text.find_elements_by_class_name("twitter-hashtag")]
     tweet["timestamp"] =  int(tweet_element.find_elements_by_class_name("_timestamp")[0].get_attribute("data-time-ms"))
     print(tweet)
     print("\n")
