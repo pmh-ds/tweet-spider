@@ -1,9 +1,10 @@
 import argparse
 import time
+import json
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-def main(hashtags):
+def main(hashtags, outfile):
     print("Starting headless Chrome browser...")
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
@@ -27,11 +28,9 @@ def main(hashtags):
 
     tweet_elements = browser.find_elements_by_class_name("content")
 
-    print("{} tweets found.\n".format(len(tweet_elements)))
+    print("{} tweets found.".format(len(tweet_elements)))
     count = 1
-    tweets = []
     for tweet_element in tweet_elements:
-        print("**** Tweet {} ****".format(count))
         tweet = {}
         tweet["username"] = (tweet_element
                              .find_elements_by_class_name("stream-item-header")[0]
@@ -44,8 +43,10 @@ def main(hashtags):
                                   tweet_text.find_elements_by_class_name("twitter-atreply")]
         tweet["timestamp"] =  int(tweet_element.find_elements_by_class_name("_timestamp")[0].get_attribute("data-time-ms"))
         tweet["link"] = tweet_element.find_elements_by_class_name("tweet-timestamp")[0].get_attribute("href")
-        print(tweet)
-        print("\n")
+
+        with open(outfile, "a") as f:
+            f.write(json.dumps(tweet) + "\n")
+
         count += 1
 
 if __name__ == "__main__":
@@ -54,8 +55,12 @@ if __name__ == "__main__":
                         type=str,
                         nargs="+",
                         default=None,
-                        help="Space delimited list of hashtag(s) to search")
+                        help="Space delimited list of hashtag(s) to search.")
+    parser.add_argument("--outfile",
+                        type=str,
+                        default="outfile.json",
+                        help="Path to output file.")
 
     args = parser.parse_args()
 
-    main(args.hashtags)
+    main(args.hashtags, args.outfile)
